@@ -126,7 +126,6 @@ class DeepNeuralNetwork:
         m = Y.shape[1]
         
         for i in range(self.L, 0, -1):
-
             A_prev = cache["A" + str(i - 1)]
             A = cache["A" + str(i)]
             W = self.__weights["W" + str(i)]
