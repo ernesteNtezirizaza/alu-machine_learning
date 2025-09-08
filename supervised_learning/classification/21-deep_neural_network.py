@@ -71,19 +71,19 @@ class DeepNeuralNetwork:
             X (numpy.array): Input array with
             shape (nx, m) = (featurs, no of examples)
         """
-        self.__cache["A0"] = X
+        self.cache["A0"] = X
         # print(self.cache)
         for i in range(1, self.L+1):
             # extract values
             W = self.weights['W'+str(i)]
             b = self.weights['b'+str(i)]
-            A = self.__cache['A'+str(i - 1)]
+            A = self.cache['A'+str(i - 1)]
             # do forward propagation
             z = np.matmul(W, A) + b
             sigmoid = 1 / (1 + np.exp(-z))  # this is the output
             # store output to the cache
-            self.__cache["A"+str(i)] = sigmoid
-        return self.__cache["A"+str(i)], self.__cache
+            self.cache["A"+str(i)] = sigmoid
+        return self.cache["A"+str(i)], self.cache
 
     def cost(self, Y, A):
         """ Calculate the cost of the Neural Network.
@@ -111,7 +111,7 @@ class DeepNeuralNetwork:
         """
         self.forward_prop(X)
         # get output of the neural network from the cache
-        output = self.__cache.get("A" + str(self.L))
+        output = self.cache.get("A" + str(self.L))
         return np.where(output >= 0.5, 1, 0), self.cost(Y, output)
 
     def gradient_descent(self, Y, cache, alpha=0.05):
@@ -124,8 +124,9 @@ class DeepNeuralNetwork:
             alpha (float): learning rate
         """
         m = Y.shape[1]
-
+        
         for i in range(self.L, 0, -1):
+
             A_prev = cache["A" + str(i - 1)]
             A = cache["A" + str(i)]
             W = self.__weights["W" + str(i)]
@@ -139,4 +140,3 @@ class DeepNeuralNetwork:
             da = np.matmul(W.T, dz)
             self.__weights['W' + str(i)] -= (alpha * dw)
             self.__weights['b' + str(i)] -= (alpha * db)
-            
